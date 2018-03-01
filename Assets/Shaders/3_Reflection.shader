@@ -3,7 +3,7 @@
 // Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-Shader "TheMill/3_Specular" {
+Shader "TheMill/3_Reflection" {
     Properties {
         _Color ("Color", Color) = (1.0, 1.0, 1.0, 1.0)
         _Cube("Cube map", Cube) = "" {}
