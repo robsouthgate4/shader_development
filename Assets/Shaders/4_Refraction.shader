@@ -1,17 +1,15 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
-// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
-
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-Shader "TheMill/3_Reflection" {
+﻿
+Shader "TheMill/4_Refraction" {
     Properties {
         _Color ("Color", Color) = (1.0, 1.0, 1.0, 1.0)
-        _Opacity ("Opacity", Range (0.0, 1.0)) = 1.0
         _Cube("Cube map", Cube) = "" {}
+        _MainTex ("Main texture", 2D) = "white" { }
     }
     SubShader {
         Pass {
+
             Tags { "LightMode" = "ForwardBase" }
+
             CGPROGRAM
                 #pragma vertex vert
                 #pragma fragment frag
@@ -21,14 +19,10 @@ Shader "TheMill/3_Reflection" {
                 uniform float4 _Color;
                 uniform float _animateLightStrength;
                 uniform samplerCUBE _Cube;
-                uniform float _Opacity;
+                 
                 // Unity defined variables
                 uniform float4 _LightColor0;
-                // Unity 3 definitions
-
-                //float4x4 _Object2World;
-                //float4x4 _World2Object;
-                //float4 _WorldSpaceLightPos0;
+                uniform sampler2D _MainTex;
 
                 // base input structs
                 struct vertexInput {
@@ -64,13 +58,17 @@ Shader "TheMill/3_Reflection" {
                     //v.vertex.x+= v.normal * ( sin(v.vertex.x + _Time) ) * 0.1;
                    
 
-                    //o.col = float4(lightFinal * _Color, 1.0);
+                    o.col = float4(lightFinal * _Color, 1.0);
                     o.pos = UnityObjectToClipPos(v.vertex);
+
+                    float dist = _SinTime * 0.5 + 0.5;
 
                     // compute world space position of the vertex
                     float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 
                     float3 worldViewDir = normalize(UnityWorldSpaceViewDir(worldPos));
+
+                    //v.vertex.xyz *= v.normal * _Color;
 
                     // world space normal
                     float3 worldNormal = UnityObjectToWorldNormal(v.normal);
@@ -92,10 +90,10 @@ Shader "TheMill/3_Reflection" {
                     half3 skyColor = DecodeHDR (skyData, unity_SpecCube0_HDR);
                     // output it!
                     fixed4 c = 0;
-
-                    c.rgb = skyColor * _Color;
-
-                    c.a = _Opacity;
+                    //half3 newWorldRefl = mul(i.worldRefl, _SinTime * 2.0);
+                    fixed4 texCol = tex2D (_MainTex, i.worldRefl);
+                    //c.rgb = skyColor * texCol.rgb;
+                    c.rgb = texCol;
 
                     return c;
                 }

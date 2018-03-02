@@ -67,8 +67,12 @@ Shader "TheMill/3b_Reflection" {
                     o.col = float4(lightFinal * _Color, 1.0);
                     o.pos = UnityObjectToClipPos(v.vertex);
 
+                    float dist = _SinTime * 0.5 + 0.5;
+
+
                     // compute world space position of the vertex
                     float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
 
                     float3 worldViewDir = normalize(UnityWorldSpaceViewDir(worldPos));
 
@@ -76,6 +80,9 @@ Shader "TheMill/3b_Reflection" {
                     float3 worldNormal = UnityObjectToWorldNormal(v.normal);
 
                     o.worldRefl = reflect(-worldViewDir, worldNormal);
+
+                   
+
 
                     return o;
 
@@ -89,10 +96,12 @@ Shader "TheMill/3b_Reflection" {
                     half3 skyColor = DecodeHDR (skyData, unity_SpecCube0_HDR);
                     // output it!
                     fixed4 c = 0;
+                    //half3 newWorldRefl = mul(i.worldRefl, _SinTime * 2.0);
+                    half3 texCol = tex2D (_MainTex, i.worldRefl);
 
-                    fixed4 texCol = tex2D (_MainTex, i.worldRefl);
+                    c.rgb = texCol;
 
-                    c.rgb = texCol.rgb;
+                    //c.rgb = texCol.rgb * _Color.rgb;
 
                     return c;
                 }

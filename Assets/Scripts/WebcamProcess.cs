@@ -24,25 +24,24 @@ public class WebcamProcess : MonoBehaviour {
             };
 
             webcam.Play();
-            data = new Color32[webcam.width * webcam.height];
-            output = new Texture2D(webcam.width, webcam.height);
-            GetComponent<Renderer>().material.mainTexture = output;
+            //data = new Color32[webcam.width * webcam.height];
+            //output = new Texture2D(webcam.width, webcam.height);
+            GetComponent<Renderer>().material.mainTexture = webcam;
         }
     }
 	
 	// Update is called once per frame
     void Update()
     {
-
-        Debug.Log(data);
+        
 
         if (data != null)
         {
             //webcam.GetPixels32(data);
             // You can play around with data however you want here.
             // Color32 has member variables of a, r, g, and b. You can read and write them however you want.
-            output.SetPixels32(data);
-            output.Apply();
+            //output.SetPixels32(data);
+            //output.Apply();
         }
     }
 }

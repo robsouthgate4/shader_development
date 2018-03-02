@@ -1,13 +1,11 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+﻿
 
-// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
-
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-Shader "TheMill/3_Reflection" {
+Shader "TheMill/5_Squish" {
     Properties {
         _Color ("Color", Color) = (1.0, 1.0, 1.0, 1.0)
-        _Opacity ("Opacity", Range (0.0, 1.0)) = 1.0
         _Cube("Cube map", Cube) = "" {}
+        _SquishAmount("Squish amount", Float) =  2.0
+        _MainTex ("Main texture", 2D) = "white" { }
     }
     SubShader {
         Pass {
@@ -21,9 +19,10 @@ Shader "TheMill/3_Reflection" {
                 uniform float4 _Color;
                 uniform float _animateLightStrength;
                 uniform samplerCUBE _Cube;
-                uniform float _Opacity;
+                uniform float _SquishAmount;
                 // Unity defined variables
                 uniform float4 _LightColor0;
+                uniform sampler2D _MainTex;
                 // Unity 3 definitions
 
                 //float4x4 _Object2World;
@@ -61,23 +60,35 @@ Shader "TheMill/3_Reflection" {
                     // For realistic lighting
                     float3 lightFinal = diffuseReflection + UNITY_LIGHTMODEL_AMBIENT.xyz;
 
-                    //v.vertex.x+= v.normal * ( sin(v.vertex.x + _Time) ) * 0.1;
-                   
+                    float3 normal = mul(unity_ObjectToWorld, v.normal);
 
-                    //o.col = float4(lightFinal * _Color, 1.0);
-                    o.pos = UnityObjectToClipPos(v.vertex);
+
 
                     // compute world space position of the vertex
-                    float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                    float3 worldPos = mul(unity_ObjectToWorld, v.vertex);
 
                     float3 worldViewDir = normalize(UnityWorldSpaceViewDir(worldPos));
 
                     // world space normal
                     float3 worldNormal = UnityObjectToWorldNormal(v.normal);
 
-                    o.worldRefl = reflect(-worldViewDir, worldNormal);
+                    float squish = min(worldPos.y - 0.1, 0) * _SquishAmount;
 
+                    normal.y = 0;
+
+                    normal = normalize(normal);
+
+
+                    v.vertex.xyz += normal * squish; //squish;
+
+                    v.vertex.y = max(v.vertex.y, 0);
                    
+
+                    o.col = float4(lightFinal * _Color, 1.0);
+                    o.pos = UnityObjectToClipPos(v.vertex);
+                   
+
+                    o.worldRefl = reflect(-worldViewDir, worldNormal);
 
 
                     return o;
@@ -92,10 +103,12 @@ Shader "TheMill/3_Reflection" {
                     half3 skyColor = DecodeHDR (skyData, unity_SpecCube0_HDR);
                     // output it!
                     fixed4 c = 0;
+                    //half3 newWorldRefl = mul(i.worldRefl, _SinTime * 2.0);
+                    half3 texCol = tex2D (_MainTex, i.worldRefl);
 
-                    c.rgb = skyColor * _Color;
+                    c.rgb = texCol * _Color;
 
-                    c.a = _Opacity;
+                    //c.rgb = texCol.rgb * _Color.rgb;
 
                     return c;
                 }
