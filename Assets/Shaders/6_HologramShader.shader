@@ -75,7 +75,9 @@ Shader "TheMill/6_HologramShader"
 
                 col = _Color * max(0, cos((i.objVertex.y) * _ScanningFrequency + -(_Time.y * _ScanningSpeed)) + _Bias);
 
-                col.b += i.objVertex.x * 50.0;
+                //col *= 1 - max(0, cos((i.objVertex.x) * _ScanningFrequency + -(_Time.y * _ScanningSpeed)) + 0.9);
+
+                col.b += i.objVertex.y;
 
 				// apply fog
 				UNITY_APPLY_FOG(i.fogCoord, col);
