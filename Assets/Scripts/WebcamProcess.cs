@@ -20,7 +20,7 @@ public class WebcamProcess : MonoBehaviour {
         {
             webcam = new WebCamTexture
             {
-                deviceName = WebCamTexture.devices[1].name
+                deviceName = WebCamTexture.devices[0].name
             };
 
             webcam.Play();

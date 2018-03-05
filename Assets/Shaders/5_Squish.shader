@@ -60,9 +60,10 @@ Shader "TheMill/5_Squish" {
                     // For realistic lighting
                     float3 lightFinal = diffuseReflection + UNITY_LIGHTMODEL_AMBIENT.xyz;
 
+
+
+                    // Calculate normal in object space
                     float3 normal = mul(unity_ObjectToWorld, v.normal);
-
-
 
                     // compute world space position of the vertex
                     float3 worldPos = mul(unity_ObjectToWorld, v.vertex);
