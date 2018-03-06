@@ -22,9 +22,9 @@ Shader "TheMill/6_HologramShader"
 	{
 		Tags { "Queue" = "Transparent" "RenderType" = "Opaque" }
 		LOD 100
-        ZWrite Off
-        Blend SrcAlpha One
-        Cull Off
+        //ZWrite Off
+        //Blend SrcAlpha One
+        //Cull Off
 
 		Pass
 		{
@@ -70,7 +70,7 @@ Shader "TheMill/6_HologramShader"
 			{
 				v2f o;
 
-                v.vertex.x += sin((_Time.y * _Speed) + v.vertex.y * _Amplitude) * _Amount * _Distance * v.vertex.y;
+                //v.vertex.x += sin((_Time.y * _Speed) + v.vertex.y * _Amplitude) * _Amount * _Distance * v.vertex.y;
 
 				o.vertex = UnityObjectToClipPos(v.vertex); //o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 
@@ -91,13 +91,13 @@ Shader "TheMill/6_HologramShader"
                 
 				fixed4 col = tex2D(_MainTex, i.uv);
 
-                col = _Color;
+                //col = _Color;
 
-                //col = fixed4(i.uv.x, i.uv.y, 1.0, 1.0);
+                col = fixed4(i.uv.x, i.uv.y, 1.0, 1.0);
 
-                col *= max(0, cos(i.objVertex.y * _ScanningFrequency + -(_Time.y * _ScanningSpeed )) + _Bias) + _Tint;
+               // col *= max(0, cos(i.objVertex.y * _ScanningFrequency + -(_Time.y * _ScanningSpeed )) + _Bias) + _Tint;
 
-                col.a = _Transparency;
+                //col.a = _Transparency;
 
 				return col;
 			}
