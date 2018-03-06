@@ -60,8 +60,6 @@ Shader "TheMill/5_Squish" {
                     // For realistic lighting
                     float3 lightFinal = diffuseReflection + UNITY_LIGHTMODEL_AMBIENT.xyz;
 
-
-
                     // Calculate normal in object space
                     float3 normal = mul(unity_ObjectToWorld, v.normal);
 
@@ -79,13 +77,13 @@ Shader "TheMill/5_Squish" {
 
                     normal = normalize(normal);
 
-
                     v.vertex.xyz += normal * squish; //squish;
 
                     v.vertex.y = max(v.vertex.y, 0);
                    
 
                     o.col = float4(lightFinal * _Color, 1.0);
+
                     o.pos = UnityObjectToClipPos(v.vertex);
                    
 

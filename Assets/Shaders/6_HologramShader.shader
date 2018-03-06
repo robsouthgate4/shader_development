@@ -9,10 +9,18 @@ Shader "TheMill/6_HologramShader"
         _ScanningFrequency ("Scanning Frequncy", Float) = 80.0
         _ScanningSpeed ("Scanning Speed", Float) = 30.0
         _Bias ("Bias", Float) = 1.0
+
+        _Transparency("Transparency", Range(0.0, 1.0)) = 1.0
+        _Tint("Tint", Range(0.0, 1.0)) = 0.0
+        _Amount("Amount", Float) = 1.0
+        _Amplitude("Amplitude", Float) = 1.0
+        _Speed("Speed", Float) = 1.0
+        _Distance("Distance", Float) = 1.0
+
 	}
 	SubShader
 	{
-		Tags { "Queue" = "Transparent" "RenderType" = "Alpha" }
+		Tags { "Queue" = "Transparent" "RenderType" = "Opaque" }
 		LOD 100
         ZWrite Off
         Blend SrcAlpha One
@@ -21,11 +29,13 @@ Shader "TheMill/6_HologramShader"
 		Pass
 		{
 			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			// make fog work
-			#pragma multi_compile_fog
-			
+            
+            #pragma vertex vert
+            #pragma fragment frag
+
+            // make fog work
+            #pragma multi_compile_fog
+            
 			#include "UnityCG.cginc"
 
 			struct appdata
@@ -38,11 +48,10 @@ Shader "TheMill/6_HologramShader"
 			{
 				float2 uv : TEXCOORD0;
                 float4 objVertex : TEXCOORD1;
-				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
 			};
 
-            // User defined variabled
+            // User defined variables
 
             fixed4 _Color;
 			sampler2D _MainTex;
@@ -50,37 +59,46 @@ Shader "TheMill/6_HologramShader"
             float _ScanningFrequency;
             float _ScanningSpeed;
             float _Bias;
+            float _Transparency;
+            float _Tint;
+            float _Amount;
+            float _Amplitude;
+            float _Speed;
+            float _Distance;
 			
 			v2f vert (appdata v)
 			{
 				v2f o;
 
+                v.vertex.x += sin((_Time.y * _Speed) + v.vertex.y * _Amplitude) * _Amount * _Distance * v.vertex.y;
 
-				o.vertex = UnityObjectToClipPos(v.vertex);
+				o.vertex = UnityObjectToClipPos(v.vertex); //o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 
                 // Convert object space to world
+
                 o.objVertex = mul(unity_ObjectToWorld, v.vertex);
 
-                //o.objVertex = o.vertex;
-
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+
 				UNITY_TRANSFER_FOG(o,o.vertex);
+                
 				return o;
 			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
+                
 				fixed4 col = tex2D(_MainTex, i.uv);
 
-                col = _Color * max(0, cos((i.objVertex.y) * _ScanningFrequency + -(_Time.y * _ScanningSpeed)) + _Bias);
+                col = _Color;
 
-                //col *= 1 - max(0, cos((i.objVertex.x) * _ScanningFrequency + -(_Time.y * _ScanningSpeed)) + 0.9);
+                //col = fixed4(i.uv.x, i.uv.y, 1.0, 1.0);
 
-                col.b += i.objVertex.y;
+                col *= max(0, cos(i.objVertex.y * _ScanningFrequency + -(_Time.y * _ScanningSpeed )) + _Bias) + _Tint;
 
-				// apply fog
-				UNITY_APPLY_FOG(i.fogCoord, col);
+                col.a = _Transparency;
+
 				return col;
 			}
 			ENDCG
