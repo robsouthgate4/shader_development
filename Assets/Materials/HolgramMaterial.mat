@@ -70,20 +70,21 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ScanningFrequency: 150
-    - _ScanningSpeed: 20
+    - _ScanningFrequency: 300
+    - _ScanningSpeed: 30
     - _ScanningTint: 0.32
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _Speed: 12.1
     - _SrcBlend: 1
-    - _Tint: 0.74
-    - _Transparency: 0.15
+    - _Tint: 0
+    - _Transparency: 1
     - _UVSec: 0
-    - _WaveAmount: 3
-    - _WaveAmplitude: 5.87
-    - _WaveSpeed: 2
+    - _WaveAmount: 0.2
+    - _WaveAmplitude: 15.78
+    - _WaveDistance: 0.08
+    - _WaveSpeed: 9.33
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.097750865, g: 0.8308824, b: 0.8005458, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

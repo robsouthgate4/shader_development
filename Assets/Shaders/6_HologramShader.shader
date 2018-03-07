@@ -6,25 +6,24 @@ Shader "TheMill/6_HologramShader"
 	{
 		_MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1,0,0,1)
-        _ScanningFrequency ("Scanning Frequncy", Float) = 80.0
-        _ScanningSpeed ("Scanning Speed", Float) = 30.0
-        _Bias ("Bias", Float) = 1.0
+        _Transparency("Transparency", Range(0.0, 1.0)) = 0.5
+        _ScanningFrequency("Scanning Frequency", Float) = 100
+        _ScanningSpeed("Scanning Speed", Float) = 10
 
-        _Transparency("Transparency", Range(0.0, 1.0)) = 1.0
-        _Tint("Tint", Range(0.0, 1.0)) = 0.0
-        _Amount("Amount", Float) = 1.0
-        _Amplitude("Amplitude", Float) = 1.0
-        _Speed("Speed", Float) = 1.0
-        _Distance("Distance", Float) = 1.0
-
+        _WaveSpeed("Wave Speed", Float) = 1
+        _WaveAmount("Wave Amount", Float) = 1
+        _WaveAmplitude("Wave Amplitude", Range(0.0, 30.0)) = 0.5
+        _WaveDistance("Wave Distance", Float) = 1
+        _Tint("Tint", Float) = 0
 	}
 	SubShader
 	{
-		Tags { "Queue" = "Transparent" "RenderType" = "Opaque" }
+		Tags { "Queue" = "Transparent" "RenderType" = "Alpha" }
 		LOD 100
-        //ZWrite Off
-        //Blend SrcAlpha One
-        //Cull Off
+        
+        ZWrite Off
+        Blend SrcAlpha One
+        Cull Off
 
 		Pass
 		{
@@ -56,21 +55,20 @@ Shader "TheMill/6_HologramShader"
             fixed4 _Color;
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+            float _Transparency;
             float _ScanningFrequency;
             float _ScanningSpeed;
-            float _Bias;
-            float _Transparency;
+            float _WaveSpeed;
+            float _WaveAmplitude;
+            float _WaveAmount;
+            float _WaveDistance;
             float _Tint;
-            float _Amount;
-            float _Amplitude;
-            float _Speed;
-            float _Distance;
 			
 			v2f vert (appdata v)
 			{
 				v2f o;
 
-                //v.vertex.x += sin((_Time.y * _Speed) + v.vertex.y * _Amplitude) * _Amount * _Distance * v.vertex.y;
+                v.vertex.x += sin(_Time.y * _WaveSpeed  + v.vertex.y * _WaveAmplitude) * _WaveDistance * _WaveAmount;
 
 				o.vertex = UnityObjectToClipPos(v.vertex); //o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 
@@ -91,13 +89,11 @@ Shader "TheMill/6_HologramShader"
                 
 				fixed4 col = tex2D(_MainTex, i.uv);
 
-                //col = _Color;
+                col = _Color * max(0, cos((i.objVertex.y * _ScanningFrequency) + -(_Time.y * _ScanningSpeed))) + _Tint;
 
-                col = fixed4(i.uv.x, i.uv.y, 1.0, 1.0);
+                col *= _Color * max(0.5, cos(i.objVertex.y + -_Time.y * 4));
 
-               // col *= max(0, cos(i.objVertex.y * _ScanningFrequency + -(_Time.y * _ScanningSpeed )) + _Bias) + _Tint;
-
-                //col.a = _Transparency;
+                col.a = _Transparency;
 
 				return col;
 			}
