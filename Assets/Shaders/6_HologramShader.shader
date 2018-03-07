@@ -18,12 +18,12 @@ Shader "TheMill/6_HologramShader"
 	}
 	SubShader
 	{
-		Tags { "Queue" = "Transparent" "RenderType" = "Alpha" }
+		Tags {  "RenderType" = "Opaque" }
 		LOD 100
         
-        ZWrite Off
-        Blend SrcAlpha One
-        Cull Off
+        //ZWrite Off
+       // Blend SrcAlpha One
+        //Cull Off
 
 		Pass
 		{
@@ -68,13 +68,13 @@ Shader "TheMill/6_HologramShader"
 			{
 				v2f o;
 
-                v.vertex.x += sin(_Time.y * _WaveSpeed  + v.vertex.y * _WaveAmplitude) * _WaveDistance * _WaveAmount;
+                //v.vertex.x += sin(_Time.y * _WaveSpeed  + v.vertex.y * _WaveAmplitude) * _WaveDistance * _WaveAmount;
 
 				o.vertex = UnityObjectToClipPos(v.vertex); //o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 
                 // Convert object space to world
 
-                o.objVertex = mul(unity_ObjectToWorld, v.vertex);
+                //o.objVertex = mul(unity_ObjectToWorld, v.vertex);
 
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 
@@ -85,15 +85,19 @@ Shader "TheMill/6_HologramShader"
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				// sample the texture
+				// Sample the texture
                 
 				fixed4 col = tex2D(_MainTex, i.uv);
 
-                col = _Color * max(0, cos((i.objVertex.y * _ScanningFrequency) + -(_Time.y * _ScanningSpeed))) + _Tint;
+                col = fixed4(i.uv.x, i.uv.y, 1.0, 1.0);
 
-                col *= _Color * max(0.5, cos(i.objVertex.y + -_Time.y * 4));
+                //col = _Color * max(0, cos((i.objVertex.y * _ScanningFrequency) + -(_Time.y * _ScanningSpeed))) + _Tint;
 
-                col.a = _Transparency;
+                //col *= _Color * max(0.5, cos(i.objVertex.y + -_Time.y * 4));
+
+                //col *= _Color * max(0.3, cos(i.objVertex.y + _Time.y * 4));
+
+               // col.a = _Transparency;
 
 				return col;
 			}
