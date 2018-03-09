@@ -5,7 +5,7 @@ Shader "TheMill/6_HologramShader"
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-        _Color ("Color", Color) = (1,0,0,1)
+        _Color ("Color", Color) = (0, 1, 0.84, 1)
         _Transparency("Transparency", Range(0.0, 1.0)) = 0.5
         _ScanningFrequency("Scanning Frequency", Float) = 100
         _ScanningSpeed("Scanning Speed", Float) = 10
@@ -24,7 +24,7 @@ Shader "TheMill/6_HologramShader"
         ZWrite Off
         Blend SrcAlpha One
         Cull Off
-
+        
 		Pass
 		{
 			CGPROGRAM
@@ -69,13 +69,15 @@ Shader "TheMill/6_HologramShader"
 				v2f o;
 				
 				
-				//if (v.vertex.y > 0.8) {
-				    //v.vertex.x += frac(sin(_Time.y * 5)) * 0.2;
-				//}
-				
+				/*if (v.vertex.y > 0.8) {
+				    v.vertex.x += frac(sin(_Time.y * 8)) * 0.05;
+				}
+                if (v.vertex.y < 0.3) {
+				    v.vertex.x += frac(sin(_Time.y * 8)) * 0.05;
+				}*/		
 
                 v.vertex.x += sin(_Time.y * _WaveSpeed  + v.vertex.y * _WaveAmplitude) * _WaveDistance * _WaveAmount;
-
+                
 				o.vertex = UnityObjectToClipPos(v.vertex); //o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 
                 // Convert object space to world
@@ -102,6 +104,8 @@ Shader "TheMill/6_HologramShader"
                 col *= _Color * max(0.5, cos(i.objVertex.y + -_Time.y * 4));
 
                 col *= _Color * max(0.3, cos(i.objVertex.y + _Time.y * 4));
+                
+                //col *= _Color * max(0.3, frac(i.objVertex.y + _Time.y * 2));
 
                 col.a = _Transparency;
 

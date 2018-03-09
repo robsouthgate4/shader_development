@@ -44,25 +44,19 @@
 			
 			v2f vert (appdata v)
 			{
-				v2f o;
-                
-				o.vertex = UnityObjectToClipPos(v.vertex);
-                
-				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                
+				v2f o;                
+				o.vertex = UnityObjectToClipPos(v.vertex);                
+				o.uv = TRANSFORM_TEX(v.uv, _MainTex);                
 				return o;
 			}
 			
 			fixed4 frag (v2f i) : SV_Target
-			{
-                
+			{                
 
-                float2 displacement = tex2D(_DisplacementTexture, float2(i.uv.x + (_Time.x * _HeatSpeed), i.uv.y)).xy;
+                float2 displacement = tex2D(_DisplacementTexture, float2(i.uv.x + (_Time.x * _HeatSpeed), i.uv.y)).xy;                
                 displacement = ((displacement * 2) - 1) * _Magnitude;
 
-
-                fixed4 col = tex2D(_MainTex, i.uv + displacement);
-             
+                fixed4 col = tex2D(_MainTex, i.uv + displacement);             
 
 				return col;
 			}

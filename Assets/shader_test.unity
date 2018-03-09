@@ -280,8 +280,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cc576238c2264e3ebc50ee96d554b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  height: 0.4
+  Speed: 5
+  Height: 0.5
 --- !u!23 &291063408
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -529,7 +529,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 554851308}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be5c9676df33d4d1fa668eca1de09030, type: 3}
   m_Name: 
@@ -938,8 +938,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cc576238c2264e3ebc50ee96d554b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1.5
-  height: 0.05
+  Speed: 5
+  Height: 0.5
 --- !u!114 &1478471944
 MonoBehaviour:
   m_ObjectHideFlags: 0

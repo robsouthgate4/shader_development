@@ -10,9 +10,5 @@ public class Main : MonoBehaviour {
         RenderSettings.ambientLight = Color.blue;
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
+
